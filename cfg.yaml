@@ -1,0 +1,33 @@
+---
+card_size: A8 # DIN A4-A8
+field_layouts: # overwrite side layout of front and back
+  kanji:
+    font: ""
+    size: 5.5
+    height: 5
+  constituent:
+    font: ""
+    size: 5.5
+    height: 5
+  myStory:
+    font: ""
+    size: 5.5
+    height: 5
+front:
+  layout: # global layout for all front sides; overwritten by field_layouts
+    font: ""
+    size: 5.5
+    height: 5
+  fields: # fields on front side
+    - kanji
+    - constituent
+back:
+  layout: # global layout for all back sides; overwritten by field_layouts
+    font: ""
+    size: 5.5
+    height: 5
+  fields: # fields on back side
+    - myStory
+empty: # replace empty fields
+  myStory:
+    koohiiStory1
