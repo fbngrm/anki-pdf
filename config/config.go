@@ -15,7 +15,7 @@ type Side struct {
 }
 
 type Config struct {
-	CardSize     layout.DIN        `yaml:"cards"`
+	CardSize     layout.DIN        `yaml:"card_size"`
 	FieldLayouts map[string]Layout `yaml:"field_layouts"`
 	Front        Side              `yaml:"front"`
 	Back         Side              `yaml:"back"`
@@ -26,6 +26,8 @@ type Layout struct {
 	Font   string  `yaml:"font"`
 	Size   float64 `yaml:"size"`
 	Height float64 `yaml:"height"`
+	Align  string  `yaml:"alignment"`
+	Color  [3]int  `yaml:"color"`
 }
 
 // FromFile loads a configuration from file.

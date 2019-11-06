@@ -33,17 +33,17 @@ const (
 type Orientation int
 
 const (
-	landscape Orientation = iota
-	portrait
+	Landscape Orientation = iota
+	Portrait
 )
 
 // orientation depends on card size
 var pageSize = map[Orientation]Rect{
-	landscape: {
+	Landscape: {
 		W: 297.,
 		H: 210.,
 	},
-	portrait: {
+	Portrait: {
 		W: 210.,
 		H: 297.,
 	},
@@ -61,14 +61,14 @@ var cardSizes = map[DIN]Rect{
 	},
 	A6: {
 		W: 148.5,
-		H: 10.5,
+		H: 105.,
 	},
 	A7: {
-		W: 10.5,
+		W: 105.,
 		H: 74.25,
 	},
 	A8: {
 		W: 74.25,
-		H: 5.25,
+		H: 52.5,
 	},
 }
