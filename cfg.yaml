@@ -1,17 +1,13 @@
 ---
 card_size: 0 # DIN A4-A8
+margin: 6.0
+strip_html: true
+trim_space: true
 field_layouts: # overwrite side layout of front and back
   kanji:
     size: 70
     height: 35
     alignment: "CM" # horizontal: "L", "C" or "R" (left, center, right); vertical: "T", "M", "B" or "A" (top, middle, bottom, baseline)
-  constituent:
-    size: 8
-    height: 5
-  myStory:
-    size: 9
-    height: 4
-    alignment: "LT"
   id:
     size: 6
     height: 2
@@ -19,6 +15,27 @@ field_layouts: # overwrite side layout of front and back
       - 150
       - 150
       - 150
+  myStory:
+    size: 9
+    height: 4
+    alignment: "LT"
+  constituent:
+    size: 7
+    height: 4
+    color:
+      - 100
+      - 100
+      - 100
+  keyword:
+    size: 12
+    height: 6
+    alignment: "CM"
+    color:
+      - 150
+      - 200
+      - 10
+  break:
+    height: 2
 front:
   layout: # global layout for all front sides; overwritten by field_layouts
     font: "togoshi-gothic"
@@ -35,8 +52,11 @@ back:
     height: 30
     alignment: "CM"
   fields: # fields on back side
-    - myStory
+    - keyword
+    - break
     - constituent
+    - break
+    - myStory
 empty: # replace empty fields
   myStory:
     koohiiStory1

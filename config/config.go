@@ -16,6 +16,9 @@ type Side struct {
 
 type Config struct {
 	CardSize     layout.DIN        `yaml:"card_size"`
+	StripHTML    bool              `yaml:"strip_html"`
+	TrimSpace    bool              `yaml:"trim_space"`
+	Margin       float64           `yaml:"margin"`
 	FieldLayouts map[string]Layout `yaml:"field_layouts"`
 	Front        Side              `yaml:"front"`
 	Back         Side              `yaml:"back"`
