@@ -1,24 +1,26 @@
 package main
 
 import (
+	"html"
 	"regexp"
 
 	"github.com/fgrimme/ankiPDF/anki"
 	"github.com/fgrimme/ankiPDF/config"
 	"github.com/fgrimme/ankiPDF/document"
 	"github.com/fgrimme/ankiPDF/layout"
+	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/jung-kurt/gofpdf"
-	"github.com/microcosm-cc/bluemonday"
 )
 
 func main() {
-	cfg, err := config.FromFile("./cfg.yaml")
+	cfg, err := config.FromFile("./cfg-A7.yaml")
 	if err != nil {
 		panic(err)
 	}
 
 	// we load the anki deck from file
-	deck, err := anki.New("./anki-decks/01_NihongoShark.com__Kanji/01_NihongoShark.json")
+	name := "./anki-decks/01_NihongoShark.com__Kanji/01_NihongoShark"
+	deck, err := anki.New(name + ".json")
 	if err != nil {
 		panic(err)
 	}
@@ -101,11 +103,12 @@ func main() {
 					// render
 					txt := card.Front[field]
 					if cfg.StripHTML {
-						txt = bluemonday.StrictPolicy().Sanitize(txt)
+						txt = strip.StripTags(txt)
 					}
 					if cfg.TrimSpace {
 						txt = space.ReplaceAllString(txt, " ")
 					}
+					txt = html.UnescapeString(txt)
 					pdf.MultiCell(w-2*margin, height, txt, "0", align, false)
 					pdf.SetXY(x+margin, pdf.GetY())
 				}
@@ -159,11 +162,12 @@ func main() {
 					// render
 					txt := card.Back[field]
 					if cfg.StripHTML {
-						txt = bluemonday.StrictPolicy().Sanitize(txt)
+						txt = strip.StripTags(txt)
 					}
 					if cfg.TrimSpace {
 						txt = space.ReplaceAllString(txt, " ")
 					}
+					txt = html.UnescapeString(txt)
 					// render
 					pdf.MultiCell(w-2*margin, height, txt, "0", align, false)
 					pdf.SetXY(x+margin, pdf.GetY())
@@ -174,7 +178,7 @@ func main() {
 		}
 	}
 
-	err = pdf.OutputFileAndClose("Fpdf_AddPage.pdf")
+	err = pdf.OutputFileAndClose(name + ".pdf")
 	if err != nil {
 		panic(err)
 	}
