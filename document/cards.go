@@ -58,7 +58,7 @@ func makeCards(c *config.Config, n notes) []Card {
 	var id string
 	cards := make([]Card, len(n))
 	for i, note := range n {
-		id = n["id"]
+		id = note["id"]
 		// get fields for front page
 		front := make(map[string]string)
 		for _, field := range c.Front.Fields {

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"html"
+	"math"
 	"path/filepath"
 	"regexp"
 
@@ -70,6 +72,11 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 	h := l.CardSize.H
 	margin := c.Margin
 
+	// error report
+	hText := 0.0
+	hCard := h - 2*margin
+	errs := make(map[string][]string, 0)
+
 	// render
 	for _, page := range d {
 		// front page
@@ -123,9 +130,49 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 						txt = space.ReplaceAllString(txt, " ")
 					}
 					txt = html.UnescapeString(txt)
-					pdf.MultiCell(w-2*margin, height, txt, "0", align, false)
+					// check height
+					var lines []string
+					if c.UTF8 {
+						lines = pdf.SplitText(txt, w-2*margin)
+						hText += float64(len(lines)) * height
+					} else {
+						lns := pdf.SplitLines([]byte(txt), w-2*margin)
+						hText += float64(len(lines)) * height
+						for _, l := range lns {
+							lines = append(lines, string(l))
+						}
+					}
+					if len(lines) == 0 {
+						continue
+					}
+					// check for error/text reaches bottom of card
+					if hText > hCard {
+						// do not render the field
+						if c.ErrorStrat == "skip" {
+							continue
+						}
+						// trim the field
+						if c.ErrorStrat == "trim" {
+							// line-height units overflowing card boundary
+							outOfBounds := hText - hCard
+							// lines overflowing card boundary
+							linesOOB := math.Ceil(outOfBounds / height)
+							// trim cells to render
+							lines = lines[:len(lines)-int(linesOOB)]
+						}
+					}
+					// render
+					for _, line := range lines {
+						pdf.CellFormat(w-2*margin, height, line, "", 0, align, false, 0, "")
+						pdf.SetXY(x+margin, pdf.GetY()+height)
+					}
 					pdf.SetXY(x+margin, pdf.GetY())
 				}
+				// check height
+				if hText > hCard {
+					errs["front"] = append(errs["front"], card.ID)
+				}
+				hText = 0.0
 				x += w
 			}
 			y += h
@@ -179,9 +226,49 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 						txt = space.ReplaceAllString(txt, " ")
 					}
 					txt = html.UnescapeString(txt)
-					pdf.MultiCell(w-2*margin, height, txt, "0", align, false)
+					// check height
+					var lines []string
+					if c.UTF8 {
+						lines = pdf.SplitText(txt, w-2*margin)
+						hText += float64(len(lines)) * height
+					} else {
+						lns := pdf.SplitLines([]byte(txt), w-2*margin)
+						hText += float64(len(lines)) * height
+						for _, l := range lns {
+							lines = append(lines, string(l))
+						}
+					}
+					if len(lines) == 0 {
+						continue
+					}
+					// check for error/text reaches bottom of card
+					if hText > hCard {
+						// do not render the field
+						if c.ErrorStrat == "skip" {
+							continue
+						}
+						// trim the field
+						if c.ErrorStrat == "trim" {
+							// line-height units overflowing card boundary
+							outOfBounds := hText - hCard
+							// lines overflowing card boundary
+							linesOOB := math.Ceil(outOfBounds / height)
+							// trim cells to render
+							lines = lines[:len(lines)-int(linesOOB)]
+						}
+					}
+					// render
+					for _, line := range lines {
+						pdf.CellFormat(w-2*margin, height, line, "", 0, align, false, 0, "")
+						pdf.SetXY(x+margin, pdf.GetY()+height)
+					}
 					pdf.SetXY(x+margin, pdf.GetY())
 				}
+				// error reporting
+				if hText > hCard {
+					errs["back"] = append(errs["back"], card.ID)
+				}
+				hText = 0.0
 				x -= w
 			}
 			y += h
@@ -194,5 +281,8 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 	if err != nil {
 		panic(err)
 	}
+	// error report
+	fmt.Printf("%s fields front %d: %v\n", c.ErrorStrat, len(errs["front"]), errs["front"])
+	fmt.Printf("%s fields back %d: %v\n", c.ErrorStrat, len(errs["back"]), errs["back"])
 
 }
