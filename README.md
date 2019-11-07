@@ -4,10 +4,10 @@ anki-pdf converts anki-decks to PDF files.
 
 ## Features
 
-    It is possible to chose fields from your anki-cards and format them individually.
-    Front and back sides of the cards can be frormatted.
-    It supports embedding images.
-    Different strategies for overflowing text.
+- Chose fields from your anki-cards and format them individually
+- Front and back sides of the cards can be configured and formatted
+- Supports images embedding
+- Different strategies for overflowing text
 
 ## Installation
 
