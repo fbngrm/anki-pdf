@@ -11,24 +11,14 @@ type Layout struct {
 	CardSize Rect // not DIN, we want fill the whole page
 }
 
-func New(cardSize DIN) *Layout {
-	o := Orientation(cardSize % 2)
+func New(size string) *Layout {
+	s := cardSizes[size]
 	return &Layout{
-		O:        o,
-		PageSize: pageSize[o],
-		CardSize: cardSizes[cardSize],
+		O:        s.o,
+		PageSize: pageSize[s.o],
+		CardSize: s.size,
 	}
 }
-
-type DIN int
-
-const (
-	A8 DIN = iota
-	A7
-	A6
-	A5
-	A4
-)
 
 type Orientation int
 
@@ -50,25 +40,43 @@ var pageSize = map[Orientation]Rect{
 }
 
 // always landscape
-var cardSizes = map[DIN]Rect{
-	A4: {
-		W: 297.,
-		H: 210.,
+var cardSizes = map[string]struct {
+	o    Orientation
+	size Rect
+}{
+	"A4": {
+		o: Landscape,
+		size: Rect{
+			W: 297.,
+			H: 210.,
+		},
 	},
-	A5: {
-		W: 210.,
-		H: 148.5,
+	"A5": {
+		o: Portrait,
+		size: Rect{
+			W: 210.,
+			H: 148.5,
+		},
 	},
-	A6: {
-		W: 148.5,
-		H: 105.,
+	"A6": {
+		o: Landscape,
+		size: Rect{
+			W: 148.5,
+			H: 105.,
+		},
 	},
-	A7: {
-		W: 105.,
-		H: 74.25,
+	"A7": {
+		o: Portrait,
+		size: Rect{
+			W: 105.,
+			H: 74.25,
+		},
 	},
-	A8: {
-		W: 74.25,
-		H: 52.5,
+	"A8": {
+		o: Landscape,
+		size: Rect{
+			W: 74.25,
+			H: 52.5,
+		},
 	},
 }

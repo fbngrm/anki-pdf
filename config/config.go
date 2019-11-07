@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 
-	"github.com/fgrimme/anki-pdf/layout"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -15,7 +14,7 @@ type Side struct {
 }
 
 type Config struct {
-	CardSize     layout.DIN        `yaml:"card_size"`
+	CardSize     string            `yaml:"card_size"`
 	StripHTML    bool              `yaml:"strip_html"`
 	TrimSpace    bool              `yaml:"trim_space"`
 	Margin       float64           `yaml:"margin"`

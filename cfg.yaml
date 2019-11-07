@@ -1,5 +1,5 @@
 ---
-card_size: 0 # DIN A4-A8
+card_size: "A8" # DIN A4-A8
 margin: 6.0
 strip_html: true
 trim_space: true
