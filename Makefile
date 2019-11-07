@@ -1,4 +1,4 @@
-.PHONY: all build test test-race test-cover
+.PHONY: all build install test test-race test-cover
 
 all: build
 
@@ -7,3 +7,8 @@ build:
 	go build -o bin/anki-pdf \
         -ldflags "-X main.version=$${VERSION:-$$(git describe --tags --always --dirty)}" \
         ./cmd/anki-pdf/main.go
+
+install:
+	go install \
+        -ldflags "-X main.version=$${VERSION:-$$(git describe --tags --always --dirty)}" \
+        ./cmd/anki-pdf/
