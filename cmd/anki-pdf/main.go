@@ -30,8 +30,6 @@ func main() {
 	}
 
 	// we load the anki deck from file
-	// name := "./anki-decks/01_NihongoShark.com__Kanji/01_NihongoShark"
-	// name := "./anki-decks/Katakana_with_stroke_diagrams_and_audio/Katakana_with_stroke_diagrams_and_audio"
 	deck, err := anki.New(*ankipath)
 	if err != nil {
 		panic(err)
@@ -170,7 +168,6 @@ func main() {
 						txt = space.ReplaceAllString(txt, " ")
 					}
 					txt = html.UnescapeString(txt)
-					// render
 					pdf.MultiCell(w-2*margin, height, txt, "0", align, false)
 					pdf.SetXY(x+margin, pdf.GetY())
 				}
