@@ -7,6 +7,7 @@ import (
 
 // Card holds all fields for front and back side of a card by model name.
 type Card struct {
+	ID    string
 	Front map[string]string
 	Back  map[string]string
 }
@@ -51,10 +52,13 @@ func makeNotes(d *anki.Deck) (notes, error) {
 	return nts, nil
 }
 
-// makeCards creates a card with front and back pages and substitutes empty fields.
+// makeCards creates a card with an id, front and back pages and substitutes
+// empty fields.
 func makeCards(c *config.Config, n notes) []Card {
+	var id string
 	cards := make([]Card, len(n))
 	for i, note := range n {
+		id = n["id"]
 		// get fields for front page
 		front := make(map[string]string)
 		for _, field := range c.Front.Fields {
@@ -74,6 +78,7 @@ func makeCards(c *config.Config, n notes) []Card {
 			back[field] = n
 		}
 		cards[i] = Card{
+			ID:    id,
 			Front: front,
 			Back:  back,
 		}
