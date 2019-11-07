@@ -1,8 +1,8 @@
 package document
 
 import (
-	"github.com/fgrimme/ankiPDF/anki"
-	"github.com/fgrimme/ankiPDF/layout"
+	"github.com/fgrimme/anki-pdf/anki"
+	"github.com/fgrimme/anki-pdf/layout"
 )
 
 type row []anki.Card

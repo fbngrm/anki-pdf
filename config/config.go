@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/fgrimme/ankiPDF/layout"
+	"github.com/fgrimme/anki-pdf/layout"
 	yaml "gopkg.in/yaml.v2"
 )
 

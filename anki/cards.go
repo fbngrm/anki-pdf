@@ -1,7 +1,7 @@
 package anki
 
 import (
-	"github.com/fgrimme/ankiPDF/config"
+	"github.com/fgrimme/anki-pdf/config"
 )
 
 // Card holds all fields for front and back side of a card by model name.
