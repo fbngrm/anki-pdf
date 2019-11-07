@@ -128,19 +128,9 @@ func main() {
 			}
 			y += h
 		}
-	}
-
-	// default layout for back pages
-	font = cfg.Back.Layout.Font
-	size = cfg.Back.Layout.Size
-	height = cfg.Back.Layout.Height
-	align = cfg.Back.Layout.Align
-	color = cfg.Back.Layout.Color
-
-	// render back pages
-	for _, page := range doc {
 		pdf.AddPage()
 		y = 0
+		// render back pages
 		for _, row := range page {
 			// draw from right to left
 			x = l.PageSize.W - w
@@ -189,6 +179,13 @@ func main() {
 			y += h
 		}
 	}
+
+	// default layout for back pages
+	font = cfg.Back.Layout.Font
+	size = cfg.Back.Layout.Size
+	height = cfg.Back.Layout.Height
+	align = cfg.Back.Layout.Align
+	color = cfg.Back.Layout.Color
 
 	outpath := *ankipath
 	outpath = outpath[0 : len(outpath)-len(filepath.Ext(outpath))]
