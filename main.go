@@ -2,6 +2,7 @@ package main
 
 import (
 	"html"
+	"path/filepath"
 	"regexp"
 
 	"github.com/fgrimme/ankiPDF/anki"
@@ -10,17 +11,28 @@ import (
 	"github.com/fgrimme/ankiPDF/layout"
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/jung-kurt/gofpdf"
+	kingpin "gopkg.in/alecthomas/kingpin.v2"
+)
+
+var (
+	version  = "unkown"
+	cfgpath  = kingpin.Flag("cfg-path", "path to config file").Short('c').Required().String()
+	ankipath = kingpin.Flag("anki-path", "path to anki deck JSON file").Short('a').Required().String()
 )
 
 func main() {
-	cfg, err := config.FromFile("./cfg-A7.yaml")
+	kingpin.Version(version)
+	kingpin.Parse()
+
+	cfg, err := config.FromFile(*cfgpath)
 	if err != nil {
 		panic(err)
 	}
 
 	// we load the anki deck from file
-	name := "./anki-decks/01_NihongoShark.com__Kanji/01_NihongoShark"
-	deck, err := anki.New(name + ".json")
+	// name := "./anki-decks/01_NihongoShark.com__Kanji/01_NihongoShark"
+	// name := "./anki-decks/Katakana_with_stroke_diagrams_and_audio/Katakana_with_stroke_diagrams_and_audio"
+	deck, err := anki.New(*ankipath)
 	if err != nil {
 		panic(err)
 	}
@@ -178,7 +190,9 @@ func main() {
 		}
 	}
 
-	err = pdf.OutputFileAndClose(name + ".pdf")
+	outpath := *ankipath
+	outpath = outpath[0 : len(outpath)-len(filepath.Ext(outpath))]
+	err = pdf.OutputFileAndClose(outpath + ".pdf")
 	if err != nil {
 		panic(err)
 	}
