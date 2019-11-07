@@ -71,36 +71,35 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 	w := l.CardSize.W
 	h := l.CardSize.H
 	margin := c.Margin
+	paddingTop := 1.
 
 	// error report
 	hText := 0.0
 	hCard := h - 2*margin
 	errs := make(map[string][]string, 0)
 
-	// render
+	// render loops
 	for _, page := range d {
 		// front page
 		pdf.AddPage()
 		y = 0
-		// default layout
-		font := c.Front.Layout.Font
-		size := c.Front.Layout.Size
-		height := c.Front.Layout.Height
-		align := c.Front.Layout.Align
-		color := c.Front.Layout.Color
 		for _, row := range page {
 			x = 0
 			for _, card := range row {
 				pdf.SetDrawColor(220, 220, 220)
 				pdf.Rect(x, y, w, h, "D")
-				pdf.SetXY(x+margin, y+margin)
+				pdf.SetXY(x+margin, y+margin+paddingTop)
 				for _, field := range c.Front.Fields {
-					// line-break
-					if field == "break" {
-						pdf.Ln(c.FieldLayouts["break"].Height)
-						pdf.SetXY(x+margin, pdf.GetY())
+					// do not render fields if we are already out of bounds when trimming
+					if hText > hCard && c.ErrorStrat == "trim" {
 						continue
 					}
+					// default layout
+					font := c.Front.Layout.Font
+					size := c.Front.Layout.Size
+					height := c.Front.Layout.Height
+					align := c.Front.Layout.Align
+					color := c.Front.Layout.Color
 					// optional field fromatting from config
 					if c.FieldLayouts[field].Size > 0 {
 						size = c.FieldLayouts[field].Size
@@ -122,6 +121,12 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 					pdf.SetFont(font, "", size)
 					pdf.SetTextColor(color[0], color[1], color[2])
 					// render
+					if field == "break" {
+						pdf.MultiCell(w-2*margin, height, "", "0", align, false)
+						pdf.SetXY(x+margin, pdf.GetY())
+						hText += height // increase text height for line-breaks
+						continue
+					}
 					txt := card.Front[field]
 					if c.StripHTML {
 						txt = strip.StripTags(txt)
@@ -180,12 +185,6 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 		// back page
 		pdf.AddPage()
 		y = 0
-		// default layout
-		font = c.Back.Layout.Font
-		size = c.Back.Layout.Size
-		height = c.Back.Layout.Height
-		align = c.Back.Layout.Align
-		color = c.Back.Layout.Color
 		// render
 		for _, row := range page {
 			// draw from right to left
@@ -194,9 +193,18 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 			for _, card := range row {
 				pdf.SetDrawColor(220, 220, 220)
 				pdf.Rect(x, y, w, h, "D")
-				pdf.SetXY(x+margin, y+margin)
-
+				pdf.SetXY(x+margin, y+margin+paddingTop)
 				for _, field := range c.Back.Fields {
+					// do not render fields if we are already out of bounds when trimming
+					if hText > hCard && c.ErrorStrat == "trim" {
+						continue
+					}
+					// default layout
+					font := c.Back.Layout.Font
+					size := c.Back.Layout.Size
+					height := c.Back.Layout.Height
+					align := c.Back.Layout.Align
+					color := c.Back.Layout.Color
 					// optional field fromatting from config
 					if c.FieldLayouts[field].Size > 0 {
 						size = c.FieldLayouts[field].Size
@@ -218,6 +226,12 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 					pdf.SetFont(font, "", size)
 					pdf.SetTextColor(color[0], color[1], color[2])
 					// render
+					if field == "break" {
+						pdf.MultiCell(w-2*margin, height, "", "0", align, false)
+						pdf.SetXY(x+margin, pdf.GetY())
+						hText += height // increase text height for line-breaks
+						continue
+					}
 					txt := card.Back[field]
 					if c.StripHTML {
 						txt = strip.StripTags(txt)
