@@ -24,27 +24,28 @@ func main() {
 	kingpin.Version(version)
 	kingpin.Parse()
 
+	// deck specific configuration
 	cfg, err := config.FromFile(*cfgpath)
 	if err != nil {
 		panic(err)
 	}
 
-	// we load the anki deck from file
+	// load the anki deck from file
 	deck, err := anki.New(*ankipath)
 	if err != nil {
 		panic(err)
 	}
 
-	// cards have configured fields for front and back
-	cards, err := anki.Cards(cfg, deck)
+	// create cards from the anki deck
+	cards, err := document.Cards(cfg, deck)
 	if err != nil {
 		panic(err)
 	}
 
-	// layout
+	// calc sizes and orientation
 	l := layout.New(cfg.CardSize)
 
-	// document
+	// create a document with cards ordered in pages and rows
 	doc := document.New(l.PageSize, l.CardSize, cards)
 
 	// render
