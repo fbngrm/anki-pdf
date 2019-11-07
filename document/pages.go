@@ -6,12 +6,12 @@ import (
 
 type row []Card
 type page []row
-type document []page
+type Document []page
 
 // New orders the given cards in pages and rows so that we can easily access
 // them in the render step by iterating the pages. Page and card size is used
 // to determine the count of cards in a row and rows on a page.
-func New(p, c layout.Rect, cards []Card) document {
+func New(p, c layout.Rect, cards []Card) Document {
 	cellsPerRow := int(p.W / c.W)
 	rowsPerPage := int(p.H / c.H)
 
