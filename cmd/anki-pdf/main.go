@@ -63,7 +63,7 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 		layout.Landscape: gofpdf.OrientationLandscape,
 		layout.Portrait:  gofpdf.OrientationPortrait,
 	}
-	pdf := gofpdf.New(orientations[l.O], "mm", "A4", "./font")
+	pdf := gofpdf.New(orientations[l.O], "mm", "A4", *fontpath)
 	pdf.SetMargins(0, 0, 0)
 	pdf.SetAutoPageBreak(false, 0)
 
