@@ -44,7 +44,7 @@ Follow the export [instructions](https://github.com/Stvad/CrowdAnki#export) to c
 The `example/` directory contains configuration files which should be used as a starting point.
 
 ```bash
-anki-pdf -c path/to/anki-deck.yaml -a path/to/anki-deck.json
+anki-pdf -c path/to/anki-deck.yaml -a path/to/anki-deck.json -f path/to/fonts [-m path/to/media]
 ```
 
 ## Fonts

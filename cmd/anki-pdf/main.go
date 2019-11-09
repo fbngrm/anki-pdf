@@ -24,7 +24,7 @@ var (
 	cfgpath   = kingpin.Flag("cfg-path", "path to config file").Short('c').Required().String()
 	ankipath  = kingpin.Flag("anki-path", "path to anki deck JSON file").Short('a').Required().String()
 	fontpath  = kingpin.Flag("font-path", "path to directory containing font files").Short('f').Required().String()
-	mediapath = kingpin.Flag("media-path", "path to directory containing media files").Short('m').Required().String()
+	mediapath = kingpin.Flag("media-path", "path to directory containing media files").Short('m').String()
 )
 
 func main() {
