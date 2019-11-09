@@ -32,6 +32,7 @@ type Layout struct {
 	Height float64 `yaml:"height"`
 	Align  string  `yaml:"alignment"`
 	Color  [3]int  `yaml:"color"`
+	Image  bool    `yaml:"is_image"`
 }
 
 // FromFile loads a configuration from file.

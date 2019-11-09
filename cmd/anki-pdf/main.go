@@ -20,10 +20,11 @@ import (
 )
 
 var (
-	version  = "unkown"
-	cfgpath  = kingpin.Flag("cfg-path", "path to config file").Short('c').Required().String()
-	ankipath = kingpin.Flag("anki-path", "path to anki deck JSON file").Short('a').Required().String()
-	fontpath = kingpin.Flag("font-dir", "path to directory containing font files").Short('f').Required().String()
+	version   = "unkown"
+	cfgpath   = kingpin.Flag("cfg-path", "path to config file").Short('c').Required().String()
+	ankipath  = kingpin.Flag("anki-path", "path to anki deck JSON file").Short('a').Required().String()
+	fontpath  = kingpin.Flag("font-path", "path to directory containing font files").Short('f').Required().String()
+	mediapath = kingpin.Flag("media-path", "path to directory containing media files").Short('m').Required().String()
 )
 
 func main() {
@@ -121,6 +122,21 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 					}
 					if len(c.FieldLayouts[field].Color) > 0 {
 						color = c.FieldLayouts[field].Color
+					}
+					// render image field; supports landscape orientation only
+					if c.FieldLayouts[field].Image {
+						img := card.Front[field]
+						img = img[len("<img src=\"") : len(img)-len("\" />")] // needs fix
+						path := filepath.Join(*mediapath, img)
+						pdf.Image(path, x+margin, y, w-2*margin, 0, true, "", 0, "")
+						// calc height of image to add it to the text height used
+						// in overflow calculation
+						info := pdf.RegisterImage(path, "")
+						ratio := info.Width() / info.Height()
+						ih := (w - 2*margin) / ratio
+						hText += ih // increase text height for line-breaks
+						pdf.SetXY(x+margin, pdf.GetY()+margin)
+						continue
 					}
 					// set formatting
 					pdf.AddUTF8Font(font, "", font+".ttf")
@@ -228,6 +244,21 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 					}
 					if len(c.FieldLayouts[field].Color) > 0 {
 						color = c.FieldLayouts[field].Color
+					}
+					// render image field; supports landscape orientation only
+					if c.FieldLayouts[field].Image {
+						img := card.Back[field]
+						img = img[len("<img src=\"") : len(img)-len("\" />")]
+						path := filepath.Join(*mediapath, img)
+						pdf.Image(path, x+margin, y, w-2*margin, 0, true, "", 0, "")
+						// calc height of image to add it to the text height used
+						// in overflow calculation
+						info := pdf.RegisterImage(path, "")
+						ratio := info.Width() / info.Height()
+						ih := (w - 2*margin) / ratio
+						hText += ih // increase text height for line-breaks
+						pdf.SetXY(x+margin, pdf.GetY()+margin)
+						continue
 					}
 					// set formatting
 					pdf.AddUTF8Font(font, "", font+".ttf")
