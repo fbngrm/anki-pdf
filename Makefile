@@ -12,3 +12,8 @@ install:
 	go install \
         -ldflags "-X main.version=$${VERSION:-$$(git describe --tags --always --dirty)}" \
         ./cmd/anki-pdf/
+
+lint:
+	docker pull golangci/golangci-lint:latest
+	docker run -v`pwd`:/workspace -w /workspace \
+        golangci/golangci-lint:latest golangci-lint run ./...
