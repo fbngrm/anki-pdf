@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"html"
+	"log"
 	"math"
+	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 
@@ -20,6 +23,7 @@ var (
 	version  = "unkown"
 	cfgpath  = kingpin.Flag("cfg-path", "path to config file").Short('c').Required().String()
 	ankipath = kingpin.Flag("anki-path", "path to anki deck JSON file").Short('a').Required().String()
+	fontpath = kingpin.Flag("font-dir", "path to directory containing font files").Short('f').Required().String()
 )
 
 func main() {
@@ -96,6 +100,7 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 					}
 					// default layout
 					font := c.Front.Layout.Font
+					checkFontPath(font) // panics if font is not accessible
 					size := c.Front.Layout.Size
 					height := c.Front.Layout.Height
 					align := c.Front.Layout.Align
@@ -109,6 +114,7 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 					}
 					if len(c.FieldLayouts[field].Font) > 0 {
 						font = c.FieldLayouts[field].Font
+						checkFontPath(font) // panics if font is not accessible
 					}
 					if len(c.FieldLayouts[field].Align) > 0 {
 						align = c.FieldLayouts[field].Align
@@ -201,6 +207,7 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 					}
 					// default layout
 					font := c.Back.Layout.Font
+					checkFontPath(font) // panics if font is not accessible
 					size := c.Back.Layout.Size
 					height := c.Back.Layout.Height
 					align := c.Back.Layout.Align
@@ -214,6 +221,7 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 					}
 					if len(c.FieldLayouts[field].Font) > 0 {
 						font = c.FieldLayouts[field].Font
+						checkFontPath(font) // panics if font is not accessible
 					}
 					if len(c.FieldLayouts[field].Align) > 0 {
 						align = c.FieldLayouts[field].Align
@@ -299,4 +307,22 @@ func render(c *config.Config, l *layout.Layout, d document.Document) {
 	fmt.Printf("%s fields front %d: %v\n", c.ErrorStrat, len(errs["front"]), errs["front"])
 	fmt.Printf("%s fields back %d: %v\n", c.ErrorStrat, len(errs["back"]), errs["back"])
 
+}
+
+// tests if a file is accessible
+func accessable(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
+}
+
+// checks if a font is accessible
+func checkFontPath(font string) {
+	p, err := filepath.Abs(*fontpath)
+	if err != nil {
+		panic(err)
+	}
+	path := path.Join(p, font+".ttf")
+	if !accessable(path) {
+		log.Panicf("cannot find font: %s", path)
+	}
 }
