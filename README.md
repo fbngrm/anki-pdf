@@ -6,7 +6,7 @@ anki-pdf converts anki-decks to PDF files.
 
 - Chose fields from your anki-cards and format them individually
 - Front and back sides of the cards can be configured and formatted
-- Supports images embedding
+- Supports image embedding
 - Different strategies for overflowing text
 
 ## Installation
@@ -52,5 +52,5 @@ To add new fonts, follow the instructions of [gofpdf](https://github.com/jung-ku
 If you use UFT-8 encoded text, set `utf8: true` in the configuration file of the anki-deck.
 
 ## Error reports
-After the program terminated, an error report will be printed.
+Before the program terminates, an error report will be printed.
 To optimize the formatting and reduce overflow errors, adjust the configuration for the overflowing fields or chose a different error handling strategy.
